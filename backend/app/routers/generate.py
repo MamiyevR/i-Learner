@@ -14,7 +14,13 @@ class GenerateRequest(BaseModel):
 
 @router.post("/generate/{session_id}", response_model=schemas.Assessment)
 async def generate(session_id: int, req: GenerateRequest):
-    """Generate an essay prompt or MCQ questions based on the session ID and assessment type."""
+    """Generate an essay prompt or MCQ questions based on the session ID and assessment type.
+    Args:
+        session_id (int): The ID of the session for which the assessment is being generated.
+        req (GenerateRequest): The request containing user ID and assessment type.
+    Returns:
+        Assessment: The generated assessment object containing the question and type.
+    """
     try:
         # Generate the question based on the session ID and assessment type
         generated_question = await generate_question(session_id, req.assessment_type)

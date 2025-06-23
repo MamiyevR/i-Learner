@@ -9,12 +9,15 @@ from app.db.schemas import (
     Assessment,
 )
 
+# SQLite with async driver for concurrent access
 DATABASE_URL = "sqlite+aiosqlite:///./assessment.db"
 engine = create_async_engine(DATABASE_URL, echo=False)
+# Session factory with autocommit disabled for explicit transaction control
 SessionLocal = async_sessionmaker(engine, expire_on_commit=False)
 
 
 async def create_practice_session(user_id: int, title: str | None):
+    """Creates a new practice session with context manager for auto-cleanup"""
     async with SessionLocal() as session:
         new_session = models.PracticeSession(user_id=user_id, title=title)
         session.add(new_session)
@@ -24,6 +27,7 @@ async def create_practice_session(user_id: int, title: str | None):
 
 
 async def update_practice_session_title(session_id: int, title: str):
+    # Use scalar_one_or_none for safe single-result query
     async with SessionLocal() as session:
         result = await session.execute(
             select(models.PracticeSession).where(
@@ -44,8 +48,8 @@ async def save_uploaded_document(
     session_id: int,
     file_path: str,
     filename: str,
-    content: str | None,
-    doc_metadata: dict | None,
+    content: str | None,  # Optional for non-text documents
+    doc_metadata: dict | None,  # Stores file type, size, etc.
 ):
     async with SessionLocal() as session:
         doc = models.Document(

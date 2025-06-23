@@ -1,3 +1,4 @@
+# Service for generating assessment content using AI
 from app.db.queries import get_document_by_session, update_practice_session_title
 from app.ai.provider import AIProvider
 from app.db.schemas import EssayContent, MCQContent, MCQQuestion
@@ -10,7 +11,7 @@ async def generate_essay_prompt(content: str) -> EssayContent:
     """
     Generate an essay prompt and expected answer based document content.
     """
-    # Use AI provider to generate essay prompt
+    # Request AI to generate essay question
     generated_question = provider.execute(
         "essay",
         {
@@ -20,7 +21,7 @@ async def generate_essay_prompt(content: str) -> EssayContent:
     if not generated_question:
         raise ValueError("Failed to generate essay prompt")
 
-    # Create EssayContent object
+    # Format the response into structured essay content
     essay_content = EssayContent(
         prompt=generated_question.get("prompt", ""),
         expected_answer=generated_question.get("expected_answer", ""),
@@ -32,8 +33,7 @@ async def generate_mcq_questions(content: str) -> MCQContent:
     """
     Generate MCQ questions, answers, and distractors based on Session_id.
     """
-
-    # Use AI provider to generate MCQ questions
+    # Generate multiple choice questions using AI
     generated_question = provider.execute(
         "mcq",
         {
@@ -70,6 +70,7 @@ async def generate_question(
     """
     Generate content based on the session ID and type.
     """
+    # retrieve document content for the session
     document = await get_document_by_session(session_id)
     if not document:
         raise ValueError("Document not found for the given session ID")

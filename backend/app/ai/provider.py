@@ -8,8 +8,10 @@ load_dotenv()
 
 class AIProvider:
     def __init__(self):
+        # Initialize OpenAI client with GPT-4.1 model
         self.client = OpenAI()
         self.model = "gpt-4.1"
+        # Map of supported AI tasks to their handler methods
         self.task_handlers = {
             "essay": self._handle_essay_generation,
             "mcq": self._handle_mcq_generation,

@@ -8,6 +8,13 @@ router = APIRouter()
 
 @router.post("/upload/{session_id}", response_model=schemas.DocumentBase)
 async def upload_document(session_id: int, file: UploadFile = File(...)):
+    """Upload a document to the server and process it to extract text.
+    Args:
+        session_id (int): The ID of the session to which the document is being uploaded.
+        file (UploadFile): The file to be uploaded, must be a PDF or TXT file.
+    Returns:
+        DocumentBase: The metadata of the uploaded document including its ID, filename, and path.
+    """
     # Validate file type
     if not file:
         raise HTTPException(status_code=400, detail="No file uploaded.")

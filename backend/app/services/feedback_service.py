@@ -8,21 +8,29 @@ provider = AIProvider()
 def mcq_feedback(
     questions: list[str], user_answers: list[str], correct_answers: list[str]
 ) -> FeedbackWithScore:
-    """Generate feedback and score for multiple-choice questions (MCQ)."""
+    """Generate feedback and score for multiple-choice questions (MCQ).
+    Args:
+        questions (list[str]): List of question texts.
+        user_answers (list[str]): List of user's answers.
+        correct_answers (list[str]): List of correct answers.
+    Returns:
+        FeedbackWithScore: An object containing feedback and score.
+    """
 
+    # Validate input arrays have matching lengths
     if len(user_answers) != len(correct_answers):
         raise ValueError("User answers length must match correct answers length")
     if len(questions) != len(correct_answers):
         raise ValueError("Questions length must match correct answers length")
 
-    # Calculate score
+    # Calculate raw score based on exact matches
     score = sum(
         1
         for user_answer, correct_answer in zip(user_answers, correct_answers)
         if user_answer == correct_answer
     )
 
-    # Use AI provider for MCQ feedback
+    # Generate detailed AI feedback for each answer
     ai_feedback = provider.execute(
         "grade_mcq",
         {
@@ -32,12 +40,11 @@ def mcq_feedback(
         },
     )
 
-    # Convert AI feedback to MCQFeedback type
     return FeedbackWithScore(feedback=ai_feedback.get("feedback", []), score=score)
 
 
 def essay_feedback(essay_text, prompt, expected_answer, content) -> FeedbackWithScore:
-    # Use AI provider for essay grading and feedback
+    # Request AI-based analysis comparing student essay against expected answer
     ai_feedback = provider.execute(
         "grade_essay",
         {

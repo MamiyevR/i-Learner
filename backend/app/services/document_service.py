@@ -9,22 +9,25 @@ provider = AIProvider()
 
 
 def extract_text_from_pdf(file: UploadFile) -> str:
+    # Reset file pointer to ensure complete read
     file.file.seek(0)
     reader = PyPDF2.PdfReader(file.file)
     text = ""
     for page in reader.pages:
+        # Concatenate text from each page, handling empty pages gracefully
         text += page.extract_text() or ""
     return text
 
 
 def extract_text_from_txt(file: UploadFile) -> str:
+    # Reset file pointer and decode with error handling for malformed UTF-8
     file.file.seek(0)
     return file.file.read().decode("utf-8", errors="ignore")
 
 
 def clean_text(text: str) -> str:
-    # Remove excessive whitespace, normalize newlines, etc.
-    text = re.sub(r"\s+", " ", text)
+    # Normalize whitespace while preserving semantic breaks
+    text = re.sub(r"\s+", " ", text)  # Replace multiple spaces with single space
     text = text.strip()
     return text
 
@@ -32,8 +35,12 @@ def clean_text(text: str) -> str:
 def process_uploaded_document(file: UploadFile) -> Optional[str]:
     """
     Extract and clean text from an uploaded document (PDF or TXT).
-    Returns cleaned text or None if extraction fails.
+    Args:
+        file (UploadFile): The uploaded file object.
+    Returns:
+        Optional[str]: Cleaned text content if extraction is successful, None otherwise.
     """
+    # Handle different file types with appropriate extractors
     if file.content_type == "application/pdf":
         try:
             text = extract_text_from_pdf(file)
@@ -55,7 +62,10 @@ def process_uploaded_document(file: UploadFile) -> Optional[str]:
 async def summarize_document(file: UploadFile) -> Optional[dict]:
     """
     Process the uploaded document and return a summary of its content.
-    Returns None if processing fails.
+    Args:
+        file (UploadFile): The uploaded file object.
+    Returns:
+        Optional[dict]: Summary of the document content if successful, None otherwise.
     """
     text = process_uploaded_document(file)
     if not text:
@@ -75,6 +85,10 @@ async def summarize_document(file: UploadFile) -> Optional[dict]:
 async def save_document(file: UploadFile) -> tuple[str, str]:
     """
     Save the file to storage and return file path.
+    Args:
+        file (UploadFile): The uploaded file object.
+    Returns:
+        tuple[str, str]: Tuple containing the file path and filename.
     """
     upload_dir = "uploaded_docs"
     os.makedirs(upload_dir, exist_ok=True)

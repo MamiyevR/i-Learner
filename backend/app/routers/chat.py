@@ -14,6 +14,7 @@ provider = AIProvider()
 
 
 class ChatRequest(BaseModel):
+    # Data model for incoming chat requests
     user_id: int
     message: str
     document_content: str | None
@@ -26,9 +27,11 @@ class ChatResponse(BaseModel):
 
 @router.post("/chat/{session_id}", response_model=ChatResponse)
 async def chat_api(session_id: int, request: ChatRequest):
+    # Process chat message within a specific session context
     user_id = request.user_id
     message = request.message
 
+    # Retrieve associated document and assessment for context
     document = await get_document_by_session(session_id)
     assessment = await get_assessment_by_session(session_id)
     if document is None:

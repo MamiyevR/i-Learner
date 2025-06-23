@@ -1,3 +1,4 @@
+# Database models for the assessment system
 from sqlalchemy.ext.asyncio import create_async_engine
 from sqlalchemy.orm import declarative_base
 from sqlalchemy import (
@@ -13,6 +14,7 @@ from sqlalchemy import (
 )
 import datetime
 
+# SQLite database configuration
 DATABASE_URL = "sqlite+aiosqlite:///./assessment.db"
 engine = create_async_engine(DATABASE_URL, echo=True)
 Base = declarative_base()
@@ -38,10 +40,10 @@ class Assessment(Base):
         Integer, ForeignKey("practice_sessions.id"), unique=True, nullable=False
     )
     user_id = Column(Integer, index=True)
-    type = Column(String, nullable=False)
-    content = Column(JSON)
-    answer = Column(JSON)
-    feedback = Column(JSON)
+    type = Column(String, nullable=False)  # 'essay' or 'mcq'
+    content = Column(JSON)  # Stores questions/prompts
+    answer = Column(JSON)  # Student's answers
+    feedback = Column(JSON)  # AI-generated feedback
     score = Column(Float)
     created_at = Column(DateTime, default=datetime.datetime.now(datetime.timezone.utc))
     updated_at = Column(

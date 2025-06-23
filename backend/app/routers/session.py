@@ -14,7 +14,12 @@ router = APIRouter()
 
 @router.post("/new_session/{user_id}", response_model=schemas.PracticeSessionBase)
 async def new_session(user_id: int):
-    """Create a new practice session for a user."""
+    """Create a new practice session for a user.
+    Args:
+        user_id (int): The ID of the user for whom the session is being created.
+    Returns:
+        PracticeSessionBase: The newly created practice session with its ID.
+    """
     try:
         session_id = await create_practice_session(
             user_id=user_id, title="New Practice Session"

@@ -14,6 +14,13 @@ class GradeRequest(BaseModel):
 
 @router.post("/grade/{session_id}", response_model=Assessment)
 async def grade_essay(session_id: int, req: GradeRequest):
+    """Process feedback for an assessment based on user answers.
+    Args:
+        session_id (int): The ID of the session for which feedback is being processed.
+        req (GradeRequest): The request containing user answers.
+    Returns:
+        Assessment: The updated assessment object with feedback and score.
+    """
     if not req.user_answer or not isinstance(req.user_answer, list):
         raise HTTPException(
             status_code=400, detail="user_answer must be a non-empty list."

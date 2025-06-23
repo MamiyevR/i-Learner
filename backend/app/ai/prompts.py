@@ -1,5 +1,6 @@
 class Prompts:
-    # Essay generation prompts
+    # System prompt for essay generation with a focus on critical analysis
+    # Format: Input -> Content text, Output -> {prompt: str, expected_answer: str}
     ESSAY_SYSTEM = """You are an expert at generating essay prompts based on provided content.
     First, your task is to analyse the content and create a brief essay prompt that encourages critical thinking and analysis.
     The prompt should be clear, concise, and relevant to the content provided.
@@ -9,7 +10,8 @@ class Prompts:
     Keep the expected answer concise, ideally around 300-400 words.
     """
 
-    # MCQ generation prompts
+    # System prompt for MCQ generation with structured question format
+    # Format: Input -> Content text, Output -> {questions: List[{question: str, options: List[str], correct: str}]}
     MCQ_SYSTEM = """You are an expert at creating multiple choice questions that test understanding of given content.
     First, analyse the content, what are the key concepts and ideas that should be tested?
     Then, create multiple choice questions that cover these concepts.
@@ -17,7 +19,9 @@ class Prompts:
     The questions should be clear, concise, and relevant to the content.
     """
 
-    # Essay grading prompts
+    # System prompt for essay grading with weighted scoring criteria
+    # Format: Input -> {prompt: str, content: str, expected_answer: str, essay: str}
+    # Output -> {score: float, feedback: List[str]}
     GRADE_ESSAY_SYSTEM = """You are an experienced essay grader who provides detailed feedback and scoring.
     First, read the essay prompt caarefully and understand the expected answer.
     Then, read the essay and understand its main arguments and structure.
@@ -39,7 +43,9 @@ class Prompts:
     Expected Answer: {expected_answer}
     """
 
-    # MCQ grading prompts
+    # System prompt for MCQ grading with explanatory feedback
+    # Format: Input -> {questions: List[str], user_answers: List[str], correct_answers: List[str]}
+    # Output -> {feedback: List[str]}
     GRADE_MCQ_SYSTEM = """You are an expert tutor who grades multiple choice questions.
     First, read the questions and understand the concepts being tested.
     Then, read the user's answers and compare them to the correct answers.
